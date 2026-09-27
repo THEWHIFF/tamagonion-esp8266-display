@@ -1,0 +1,125 @@
+esphome:
+  name: tor-screen-test
+  friendly_name: TOR Screen Test
+
+esp8266:
+  board: esp12e
+
+logger:
+  level: INFO
+
+wifi:
+  ap:
+    ssid: "TOR-Screen-Setup"
+    password: !secret fallback_ap_password
+    ap_timeout: 10s
+
+captive_portal:
+
+web_server:
+  port: 80
+  version: 2
+  local: true
+  auth:
+    username: admin
+    password: !secret web_password
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+  - platform: web_server
+
+spi:
+  clk_pin: GPIO14
+  mosi_pin: GPIO13
+  interface: hardware
+  id: display_spi
+
+output:
+  - platform: esp8266_pwm
+    pin: GPIO05
+    frequency: 1000 Hz
+    id: backlight_pwm
+    inverted: true
+
+light:
+  - platform: monochromatic
+    output: backlight_pwm
+    id: backlight
+    name: "Backlight"
+    restore_mode: ALWAYS_ON
+
+font:
+  - file:
+      type: gfonts
+      family: "Roboto Mono"
+      weight: 400
+    id: terminal_font
+    size: 11
+    bpp: 1
+
+color:
+  - id: black
+    red: 0%
+    green: 0%
+    blue: 0%
+
+  - id: white
+    red: 100%
+    green: 100%
+    blue: 100%
+
+display:
+  - platform: mipi_spi
+    id: lcd
+    model: ST7789V
+    spi_id: display_spi
+
+    dimensions:
+      width: 240
+      height: 240
+      offset_width: 0
+      offset_height: 0
+
+    dc_pin: GPIO00
+    reset_pin: GPIO02
+
+    buffer_size: 12.5%
+    color_depth: 16
+    color_order: BGR
+    invert_colors: true
+
+    spi_mode: mode3
+    data_rate: 40000000
+
+    rotation: 0
+    update_interval: 1s
+    auto_clear_enabled: false
+
+    lambda: |-
+      it.fill(id(black));
+
+      const char *lines[] = {
+        "123456789012345678901234567890",
+        "------------------------------",
+        "TOR NODE",
+        "",
+        "        /\\_/\\",
+        "       ( o.o )",
+        "        > ^ <",
+        "",
+        "STATUS: ONLINE",
+        "",
+        "UPTIME: 3d 14h",
+        "RX:     1.8 MB/s",
+        "TX:     2.1 MB/s",
+        "",
+        "PAGE 1/3",
+        "",
+        "ESP8266 / 240x240",
+        "OTA READY"
+      };
+
+      for (int i = 0; i < 18; i++) {
+        it.print(2, 2 + (i * 13), id(terminal_font), id(white), lines[i]);
+      }

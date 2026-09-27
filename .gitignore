@@ -1,0 +1,7 @@
+.venv/
+.esphome/
+secrets.yaml
+*.bin
+*.bak
+*.pre-git
+__pycache__/
