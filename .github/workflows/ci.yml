@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  firmware:
+    name: ESPHome firmware
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install ESPHome
+        run: pip install -r requirements.txt
+
+      - name: Prepare build secrets
+        run: cp secrets.example.yaml secrets.yaml
+
+      - name: Validate configuration
+        run: esphome config tamagonion-display.yaml
+
+      - name: Compile firmware
+        run: esphome compile tamagonion-display.yaml
+
+  simulator:
+    name: Tamagonion simulator
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install simulator dependencies
+        run: pip install -r tools/requirements-simulator.txt
+
+      - name: Compile simulator
+        run: python -m py_compile tools/tamagonion_simulator.py
+
+      - name: Load Tamagonion renderer
+        run: python tools/tamagonion_simulator.py --list
