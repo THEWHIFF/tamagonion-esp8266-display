@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "esphome/core/component.h"
+#include "esphome/components/display/display.h"
 
 namespace esphome {
 namespace tamagonion_display {
@@ -15,6 +16,7 @@ class TamagonionDisplay : public Component {
  public:
   void set_port(uint16_t port) { this->port_ = port; }
   void set_max_frame_size(size_t size) { this->max_frame_size_ = size; }
+  void set_display(display::Display *display) { this->display_ = display; }
 
   void setup() override;
   void loop() override;
@@ -41,6 +43,9 @@ class TamagonionDisplay : public Component {
   bool process_rx_();
   bool parse_header_(std::string header);
   void commit_frame_(const std::string &payload);
+
+  display::Display *display_{nullptr};
+  bool frame_dirty_{false};
 
   uint16_t port_{18511};
   size_t max_frame_size_{4096};

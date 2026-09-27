@@ -201,18 +201,7 @@ void TamagonionDisplay::loop() {
   // This removes timing jitter between TCP frames and the display poller.
   if (this->frame_dirty_ && this->display_ != nullptr) {
     this->frame_dirty_ = false;
-
-    const uint32_t started = millis();
     this->display_->update();
-    const uint32_t elapsed = millis() - started;
-
-    ESP_LOGI(
-        TAG,
-        "Display update frame %u took %u ms; free heap=%u",
-        this->sequence_,
-        elapsed,
-        ESP.getFreeHeap()
-    );
   }
 
   // Only discard connection state after all pending bytes have

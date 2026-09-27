@@ -89,8 +89,8 @@ display:
     dc_pin: GPIO00
     reset_pin: GPIO02
 
-    buffer_size: 12.5%
-    color_depth: 16
+    buffer_size: 25%
+    color_depth: 8
     color_order: BGR
     invert_colors: true
 
@@ -98,7 +98,7 @@ display:
     data_rate: 40000000
 
     rotation: 0
-    update_interval: 250ms
+    update_interval: never
     auto_clear_enabled: false
 
     lambda: |-
@@ -132,5 +132,6 @@ external_components:
 
 tamagonion_display:
   id: tg_display
+  display_id: lcd
   port: 18511
   max_frame_size: 4096
