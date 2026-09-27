@@ -50,13 +50,18 @@ light:
     restore_mode: ALWAYS_ON
 
 font:
-  - file:
-      type: gfonts
-      family: "Roboto Mono"
-      weight: 400
+  - file: "/usr/share/fonts/google-noto/NotoSansMono-Regular.ttf"
     id: terminal_font
     size: 8
     bpp: 1
+    glyphs:
+      - " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+      - "°∙"
+      - "┌─┐│└┘"
+      - "├┤┼"
+      - "╔═╗║╚╝"
+      - "╓┬╖╤╕╧╒╙┴╜╘╛╬"
+      - "█▄▀▌▐░▒▓"
 
 color:
   - id: black
