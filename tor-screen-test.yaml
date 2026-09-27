@@ -63,6 +63,14 @@ font:
       - "╓┬╖╤╕╧╒╙┴╜╘╛╬"
       - "█▄▀▌▐░▒▓"
 
+
+  - file: "/usr/share/fonts/google-noto/NotoSansMono-Regular.ttf"
+    id: boot_font
+    size: 14
+    bpp: 1
+    glyphs:
+      - " .:-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+
 color:
   - id: black
     red: 0%
@@ -73,6 +81,7 @@ color:
     red: 100%
     green: 100%
     blue: 100%
+
 
 display:
   - platform: mipi_spi
@@ -105,13 +114,60 @@ display:
       it.fill(id(black));
 
       if (!id(tg_display).has_frame()) {
-        it.print(
-          2,
-          2,
+        std::string ip = id(tg_display).get_ip_address();
+        std::string code = id(tg_display).get_pairing_code();
+
+        it.printf(
+          120, 10,
+          id(boot_font),
+          id(white),
+          TextAlign::TOP_CENTER,
+          "TAMAGONION"
+        );
+
+        it.printf(
+          120, 50,
+          id(boot_font),
+          id(white),
+          TextAlign::TOP_CENTER,
+          "IP %s",
+          ip.c_str()
+        );
+
+        it.printf(
+          120, 78,
+          id(boot_font),
+          id(white),
+          TextAlign::TOP_CENTER,
+          "PORT %u",
+          id(tg_display).get_port()
+        );
+
+        it.printf(
+          120, 112,
+          id(boot_font),
+          id(white),
+          TextAlign::TOP_CENTER,
+          "PAIRING CODE"
+        );
+
+        it.printf(
+          120, 142,
+          id(boot_font),
+          id(white),
+          TextAlign::TOP_CENTER,
+          "%s",
+          code.c_str()
+        );
+
+        it.printf(
+          120, 195,
           id(terminal_font),
           id(white),
-          "WAITING FOR TAMAGONION"
+          TextAlign::TOP_CENTER,
+          "Waiting for Tamagonion..."
         );
+
         return;
       }
 
@@ -132,6 +188,7 @@ external_components:
 
 tamagonion_display:
   id: tg_display
+  pairing_code: !secret tamagonion_pairing_code
   display_id: lcd
   port: 18511
   max_frame_size: 4096

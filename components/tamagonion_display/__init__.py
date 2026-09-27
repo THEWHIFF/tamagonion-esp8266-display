@@ -7,6 +7,7 @@ DEPENDENCIES = ["wifi", "display"]
 
 CONF_DISPLAY_ID = "display_id"
 CONF_MAX_FRAME_SIZE = "max_frame_size"
+CONF_PAIRING_CODE = "pairing_code"
 
 tamagonion_display_ns = cg.esphome_ns.namespace("tamagonion_display")
 
@@ -19,6 +20,7 @@ CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(TamagonionDisplay),
         cv.Required(CONF_DISPLAY_ID): cv.use_id(display.Display),
+        cv.Required(CONF_PAIRING_CODE): cv.string_strict,
         cv.Optional(CONF_PORT, default=18511): cv.port,
         cv.Optional(CONF_MAX_FRAME_SIZE, default=4096): cv.int_range(
             min=256, max=16384
@@ -36,3 +38,4 @@ async def to_code(config):
     cg.add(var.set_display(disp))
     cg.add(var.set_port(config[CONF_PORT]))
     cg.add(var.set_max_frame_size(config[CONF_MAX_FRAME_SIZE]))
+    cg.add(var.set_pairing_code(config[CONF_PAIRING_CODE]))
